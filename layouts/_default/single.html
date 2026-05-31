@@ -1,6 +1,66 @@
 {{ define "main" }}
-<article>
-    <h2>{{ .Title }}</h2>
+{{/*
+  Front-matter fields:
+    title, description, weight
+    difficulty   (beginner | intermediate | advanced) — shown as a pill
+    time         (e.g. "15 min") — estimated reading/working time
+    updated      (date) — last reviewed date
+    prereqs      (list of strings) — shown in a callout at the top
+*/}}
+<article class="article" data-kind="{{ .Section }}">
+
+  <header class="article-head">
+    {{/* Diátaxis quadrant label so users always know what kind of doc they're reading */}}
+    {{ $labels := dict
+        "tutorials" "Tutorial"
+        "how-to" "How-To Guide"
+        "reference" "Reference"
+        "explanation" "Explanation"
+        "zero-to-hero" "Learning Track"
+        "packages" "Package" }}
+    {{ with index $labels .Section }}
+      <span class="doc-type doc-type--{{ $.Section }}">{{ . }}</span>
+    {{ end }}
+
+    <h1>{{ .Title }}</h1>
+
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+
+    <div class="article-meta">
+      {{ with .Params.difficulty }}<span class="pill pill--{{ . }}">{{ . | title }}</span>{{ end }}
+      {{ with .Params.time }}<span class="meta-item">⏱ {{ . }}</span>{{ end }}
+      {{ with .Params.updated }}<span class="meta-item">Updated {{ dateFormat "2 Jan 2006" . }}</span>{{ end }}
+      {{ if .WordCount }}<span class="meta-item">{{ .ReadingTime }} min read</span>{{ end }}
+    </div>
+  </header>
+
+  {{/* Prerequisites callout */}}
+  {{ with .Params.prereqs }}
+  <div class="callout callout--prereq">
+    <p class="callout-title">Before you start</p>
+    <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+  </div>
+  {{ end }}
+
+  <div class="prose">
     {{ .Content }}
+  </div>
+
+  {{/* Linear prev/next navigation for the Zero-to-Hero track */}}
+  {{ if eq .Section "zero-to-hero" }}
+    {{ partial "track-nav.html" . }}
+  {{ end }}
+
+  <footer class="article-foot">
+    {{ with .Params.tags }}
+    <div class="tags">
+      {{ range . }}<a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>{{ end }}
+    </div>
+    {{ end }}
+    <p class="edit-link">
+      Found a problem? <a href="https://github.com/TuffenDuffen/debian-wiki/issues/new">Submit an issue on GitHub</a>.
+    </p>
+  </footer>
+
 </article>
 {{ end }}

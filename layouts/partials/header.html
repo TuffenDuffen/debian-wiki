@@ -1,0 +1,52 @@
+{{/* Top masthead: logo, primary section nav, mobile sidebar toggle */}}
+<header class="masthead">
+  <div class="masthead-inner">
+    {{/* Hamburger menu visible on narrow screens */}}
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </label>
+    <label for="nav-toggle" class="nav-backdrop" aria-hidden="true"></label>
+
+    <a class="brand" href="{{ "/" | relURL }}">
+      <img class="brand-logo" src="/img/debian-esque-logo.svg" alt="" width="32" height="38">
+      <span class="brand-text">Debian <strong>Wiki</strong></span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      {{ range sort .Site.Params.sections "weight" }}
+        <a href="{{ .url | relURL }}"
+           class="{{ if hasPrefix $.RelPermalink .url }}is-active{{ end }}">{{ .name }}</a>
+      {{ end }}
+    </nav>
+
+    <form class="search" action="/search/" method="get" role="search">
+      <input type="search" name="q" placeholder="Search the wiki…" aria-label="Search">
+    </form>
+  </div>
+
+  {{/* Release banner */}}
+  <div class="release-banner">
+    Documentation for Debian <strong>{{ .Site.Params.debianRelease | title }}</strong> (stable)
+  </div>
+</header>
+
+{{/* Breadcrumb trail (skipped on the homepage) */}}
+{{ if not .IsHome }}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{{ "/" | relURL }}">Home</a></li>
+    {{ $url := "" }}
+    {{ range $i, $p := split (strings.TrimSuffix "/" (strings.TrimPrefix "/" .RelPermalink)) "/" }}
+      {{ $url = printf "%s/%s" $url $p }}
+      <li>
+        {{ if eq $p (path.Base $.RelPermalink) }}
+          <span aria-current="page">{{ $.Title }}</span>
+        {{ else }}
+          <a href="{{ $url | relURL }}/">{{ $p | humanize | title }}</a>
+        {{ end }}
+      </li>
+    {{ end }}
+  </ol>
+</nav>
+{{ end }}

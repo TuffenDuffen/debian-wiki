@@ -1,3 +1,56 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'Debian Wiki'
+baseURL = "https://debianwiki.nanojaw.net/"
+languageCode = "en-us"
+title = "Debian Wiki"
+enableGitInfo = false
+
+# Generate a section list page even for taxonomy-less sections
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true            # allow raw HTML in Markdown where needed
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel   = 4
+    ordered    = false
+
+# `weight` controls ordering in the sidebar / nav.
+[params]
+  description = "The community-maintained documentation hub for the Debian project."
+  debianRelease = "trixie"
+
+  [[params.sections]]
+    name   = "Zero to Hero"
+    url    = "/zero-to-hero/"
+    icon   = "rocket"
+    weight = 1
+  [[params.sections]]
+    name   = "Tutorials"
+    url    = "/tutorials/"
+    icon   = "book"
+    weight = 2
+  [[params.sections]]
+    name   = "How-To Guides"
+    url    = "/how-to/"
+    icon   = "wrench"
+    weight = 3
+  [[params.sections]]
+    name   = "Reference"
+    url    = "/reference/"
+    icon   = "list"
+    weight = 4
+  [[params.sections]]
+    name   = "Explainers"
+    url    = "/explainers/"
+    icon   = "bulb"
+    weight = 5
+  [[params.sections]]
+    name   = "Packages"
+    url    = "/packages/"
+    icon   = "box"
+    weight = 6
+
+[taxonomies]
+  tag = "tags"

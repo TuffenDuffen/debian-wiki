@@ -1,0 +1,59 @@
+{{/*
+  Left sidebar. Shows the navigation tree for the current top-level section.
+  For Zero-to-Hero it renders an ordered, numbered learning track.
+*/}}
+<aside id="sidebar" class="sidebar" aria-label="Section navigation">
+  <div class="sidebar-inner">
+
+    {{ $currentSection := .Section }}
+    {{ $sectionPage := .Site.GetPage (printf "/%s" $currentSection) }}
+
+    {{ if $sectionPage }}
+      <p class="sidebar-title">{{ $sectionPage.Title }}</p>
+
+      {{ if eq $currentSection "zero-to-hero" }}
+        {{/* Linear, numbered learning track ordered by weight */}}
+        <ol class="track">
+          {{ range $sectionPage.Pages.ByWeight }}
+            <li class="{{ if eq $.RelPermalink .RelPermalink }}is-current{{ end }}">
+              <a href="{{ .RelPermalink }}">
+                <span class="track-step">{{ .Weight }}</span>
+                <span class="track-label">{{ .Title }}</span>
+              </a>
+            </li>
+          {{ end }}
+        </ol>
+      {{ else }}
+        {{/* Standard nested nav for the Diátaxis quadrants and Packages */}}
+        <ul class="nav-tree">
+          {{ range $sectionPage.Sections.ByWeight }}
+            <li class="nav-group">
+              <span class="nav-group-title">{{ .Title }}</span>
+              <ul>
+                {{ range .Pages.ByWeight }}
+                  <li class="{{ if eq $.RelPermalink .RelPermalink }}is-current{{ end }}">
+                    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                  </li>
+                {{ end }}
+              </ul>
+            </li>
+          {{ end }}
+          {{ range $sectionPage.Pages.ByWeight }}
+            <li class="{{ if eq $.RelPermalink .RelPermalink }}is-current{{ end }}">
+              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            </li>
+          {{ end }}
+        </ul>
+      {{ end }}
+    {{ else }}
+      {{/* Homepage / top-level: list the six top sections */}}
+      <p class="sidebar-title">Browse</p>
+      <ul class="nav-tree">
+        {{ range sort .Site.Params.sections "weight" }}
+          <li><a href="{{ .url | relURL }}">{{ .name }}</a></li>
+        {{ end }}
+      </ul>
+    {{ end }}
+
+  </div>
+</aside>

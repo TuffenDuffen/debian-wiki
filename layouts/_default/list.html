@@ -1,8 +1,39 @@
 {{ define "main" }}
-{{ .Content }}
-    {{ range .Pages }}
-    <ul>
-        <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
-    </ul>
+<article class="article">
+  <header class="article-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+  </header>
+
+  {{ $pages := where (.Pages) "Kind" "page" }}
+  {{ if $pages }}
+  <div class="card-grid">
+    {{ range $pages.ByWeight }}
+      <a class="card" href="{{ .RelPermalink }}">
+        <h2 class="card-title">{{ .Title }}</h2>
+        {{ with .Description }}<p class="card-desc">{{ . }}</p>{{ end }}
+        <div class="card-meta">
+          {{ with .Params.difficulty }}<span class="pill pill--{{ . }}">{{ . | title }}</span>{{ end }}
+          {{ with .Params.time }}<span class="meta-item">⏱ {{ . }}</span>{{ end }}
+        </div>
+      </a>
     {{ end }}
+  </div>
+  {{ end }}
+
+  {{/* Sub-sections, if any */}}
+  {{ range .Sections.ByWeight }}
+    <section class="subsection">
+      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <ul class="link-list">
+        {{ range .Pages.ByWeight }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            {{ with .Description }}<span class="link-desc">{{ . }}</span>{{ end }}
+          </li>
+        {{ end }}
+      </ul>
+    </section>
+  {{ end }}
+</article>
 {{ end }}

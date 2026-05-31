@@ -1,0 +1,31 @@
+{{ define "main" }}
+<div class="home">
+  <section class="hero">
+    <h1>Welcome to the unofficial Debian Wiki</h1>
+    <p class="hero-lede">{{ .Site.Params.description }}
+       New here? Start with the <a href="/zero-to-hero/">Zero-to-Hero</a> track.</p>
+    <form class="hero-search" action="/search/" method="get" role="search">
+      <input type="search" name="q" placeholder="Search documentation, packages, guides…" aria-label="Search">
+      <button type="submit">Search</button>
+    </form>
+  </section>
+
+  <section class="diataxis-grid" aria-label="Documentation categories">
+    {{ range sort .Site.Params.sections "weight" }}
+      <a class="quadrant quadrant--{{ .icon }}" href="{{ .url | relURL }}">
+        <span class="quadrant-name">{{ .name }}</span>
+        {{ $blurbs := dict
+            "Zero to Hero" "A guided path from first install to confident user."
+            "Tutorials" "Learning-oriented lessons that build skills step by step."
+            "How-To Guides" "Goal-oriented recipes for getting a specific task done."
+            "Reference" "Accurate descriptions of commands, files, and APIs."
+            "Explainers" "Background and discussion that deepens understanding."
+            "Packages" "Browse every package available in Debian." }}
+        <span class="quadrant-blurb">{{ index $blurbs .name }}</span>
+      </a>
+    {{ end }}
+  </section>
+
+  {{ with .Content }}<section class="prose home-prose">{{ . }}</section>{{ end }}
+</div>
+{{ end }}

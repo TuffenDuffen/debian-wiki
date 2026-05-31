@@ -1,0 +1,22 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <img src="/img/debian-esque-logo.svg" alt="" width="28" height="33">
+      <p>The unofficial Debian Wiki is maintained by the Debian community. Content is available
+         under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International license</a> unless noted otherwise.</p>
+    </div>
+    <nav class="footer-col" aria-label="Footer">
+      <p class="footer-heading">Documentation</p>
+      <ul>
+        {{ range sort .Site.Params.sections "weight" }}
+          <li><a href="{{ .url | relURL }}">{{ .name }}</a></li>
+        {{ end }}
+      </ul>
+    </nav>
+    <div class="footer-col">
+      <p class="footer-heading">Last built</p>
+      <p>{{ now.Format "2 January 2006, 15:04 MST" }}</p>
+      <p>Built with Hugo {{ hugo.Version }}.</p>
+    </div>
+  </div>
+</footer>

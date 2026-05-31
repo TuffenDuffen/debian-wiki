@@ -1,0 +1,25 @@
+{{/* Linear prev/next for the Zero-to-Hero track, ordered by weight */}}
+{{ $track := .Site.GetPage "/zero-to-hero" }}
+{{ $pages := $track.Pages.ByWeight }}
+{{ $idx := -1 }}
+{{ range $i, $p := $pages }}
+  {{ if eq $p.RelPermalink $.RelPermalink }}{{ $idx = $i }}{{ end }}
+{{ end }}
+{{ if ge $idx 0 }}
+<nav class="track-nav" aria-label="Learning track navigation">
+  {{ if gt $idx 0 }}
+    {{ $prev := index $pages (sub $idx 1) }}
+    <a class="track-nav-prev" href="{{ $prev.RelPermalink }}">
+      <span class="track-nav-dir">← Previous</span>
+      <span class="track-nav-title">{{ $prev.Title }}</span>
+    </a>
+  {{ else }}<span></span>{{ end }}
+  {{ if lt $idx (sub (len $pages) 1) }}
+    {{ $next := index $pages (add $idx 1) }}
+    <a class="track-nav-next" href="{{ $next.RelPermalink }}">
+      <span class="track-nav-dir">Next →</span>
+      <span class="track-nav-title">{{ $next.Title }}</span>
+    </a>
+  {{ else }}<span></span>{{ end }}
+</nav>
+{{ end }}
